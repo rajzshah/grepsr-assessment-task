@@ -26,7 +26,7 @@ function resources_cpt_render_item( $post ) {
 		? get_the_excerpt( $post_id )
 		: wp_trim_words( get_the_content( null, false, $post_id ), 20 );
 
-	// build featured image with basic fallback
+	// featured image (responsive) with fallback from settings or bundled placeholder
 	$featured_image = get_the_post_thumbnail(
 		$post_id,
 		'medium',
@@ -34,17 +34,33 @@ function resources_cpt_render_item( $post ) {
 			'class' => 'resource-featured-image',
 			'alt' => $title ? esc_attr( $title ) : '',
 			'loading' => 'lazy',
+			'sizes' => '(max-width: 480px) 100vw, (max-width: 768px) 50vw, 320px',
 		)
 	);
 
 	if ( empty( $featured_image ) ) {
-		// use bundled placeholder when no thumbnail is set
+		$fallback_id = (int) get_option( 'resources_cpt_fallback_image_id', 0 );
+		if ( $fallback_id ) {
+			$featured_image = wp_get_attachment_image(
+				$fallback_id,
+				'medium',
+				false,
+				array(
+					'class' => 'resource-featured-image is-fallback',
+					'alt' => $title ? esc_attr( $title ) : esc_attr__( 'Resource', 'resources-cpt' ),
+					'loading' => 'lazy',
+					'sizes' => '(max-width: 480px) 100vw, (max-width: 768px) 50vw, 320px',
+				)
+			);
+		}
+	}
+	// absolute fallback if nothing else available
+	if ( empty( $featured_image ) ) {
 		$placeholder_src = apply_filters(
 			'resources_cpt_fallback_image_src',
 			RESOURCES_CPT_URL . 'assets/images/placeholder.svg',
 			$post_id
 		);
-
 		$featured_image = sprintf(
 			'<img class="resource-featured-image is-fallback" src="%s" alt="%s" loading="lazy" />',
 			esc_url( $placeholder_src ),

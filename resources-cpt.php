@@ -3,7 +3,7 @@
  * Plugin Name: Resources Custom Post Type
  * Plugin URI: https://github.com/rajzshah/grepsr-assessment-task
  * Description: A custom post type for Resources with a shortcode to display latest resources in a responsive grid/list.
- * Version: 1.1.0
+ * Version: 1.1.01
  * Author: Raj Shah
  * Author URI: https://raj-shah.com.np/about/
  * License: GPL v2 or later
@@ -49,4 +49,5 @@ add_action('plugins_loaded', 'resources_cpt_load_textdomain');
 require_once RESOURCES_CPT_DIR . 'includes/cpt.php';
 require_once RESOURCES_CPT_DIR . 'includes/assets.php';
 require_once RESOURCES_CPT_DIR . 'includes/shortcode.php';
+require_once RESOURCES_CPT_DIR . 'includes/admin.php';
 
