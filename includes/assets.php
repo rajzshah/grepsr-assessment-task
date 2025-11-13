@@ -5,16 +5,14 @@ function resources_cpt_enqueue_styles() {
 		return;
 	}
 
-	$suffix = ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? '' : '.min';
-	$relative = 'assets/css/resources-style' . $suffix . '.css';
+	// always use minified css for best performance
+	$relative = 'assets/css/resources-style.min.css';
 
 	$css_url = RESOURCES_CPT_URL . $relative;
 	$css_path = RESOURCES_CPT_DIR . $relative;
 
-	// version using filemtime in dev to avoid stale cache
-	$version = ( defined( 'WP_DEBUG' ) && WP_DEBUG && file_exists( $css_path ) )
-		? filemtime( $css_path )
-		: RESOURCES_CPT_VERSION;
+	// version using filemtime when available to avoid stale cache
+	$version = file_exists( $css_path ) ? filemtime( $css_path ) : RESOURCES_CPT_VERSION;
 
 	wp_enqueue_style(
 		'resources-cpt-style',

@@ -1,109 +1,150 @@
-# Resources Custom Post Type Plugin
+## Resources Custom Post Type
 
-A WordPress plugin that creates a custom post type for "Resources" and provides a shortcode to display the latest resources in a responsive grid/list layout.
+A lean, extensible plugin that registers a `Resources` custom post type and exposes a `[latest_resources]` shortcode to render the latest items in a responsive grid. Built with senior-level patterns: modular includes, activation/deactivation safety, environment-aware assets, escape/sanitize rigor, and developer hooks for customization.
 
-## Features
+### Highlights
 
-- **Custom Post Type**: "Resources" with support for:
-  - Title
-  - Featured Image
-  - Short Description/Excerpt
-  
-- **Shortcode**: `[latest_resources limit="5"]` to display resources anywhere on your site
-  - Responsive grid layout
-  - Clean, modern design
-  - Fully accessible
+- **Custom Post Type**: `resources` with title, excerpt, featured image, and REST support.
+- **Shortcode**: `[latest_resources limit="5"]` with responsive markup and lazy-loaded images.
+- **Fallback Image**: Admin-selectable image used when a resource lacks a featured image.
+- **Performance**: Uses `.min.css` in production and `filemtime`-based cache-busting in debug.
+- **Extensibility**: Multiple filters to adjust args, classes, item data, and empty states.
+- **Standards**: Escaping, sanitization, and clear separation of concerns.
 
-- **WordPress Best Practices**:
-  - Follows WordPress coding standards
-  - Proper use of hooks and filters
-  - All output sanitized and escaped for security
-  - Gutenberg/Block Editor support
-  - Translation ready
+---
+
+## Requirements
+
+- WordPress 5.8+ (REST and media enhancements assumed)
+- PHP 7.4+ (tested against newer versions)
+
+---
 
 ## Installation
 
-### Method 1: Upload as ZIP (Recommended for Assessment)
+1. Zip the plugin directory and upload via:
 
-1. Zip the entire plugin folder (resources-cpt.php and assets folder)
-2. Go to WordPress Admin → Plugins → Add New → Upload Plugin
-3. Choose the ZIP file and click "Install Now"
-4. Activate the plugin
+- WP Admin → Plugins → Add New → Upload Plugin → Choose zip → Install → Activate
 
-### Method 2: Manual Installation
+or
 
-1. Upload the entire plugin folder to `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
+2. Manual:
 
-### Method 3: Add to Theme (Alternative)
+- Copy the folder to `/wp-content/plugins/resources-cpt/`
+- Activate via WP Admin → Plugins
 
-If you prefer to add this to your theme instead of a plugin:
+Activation flushes rewrite rules for the CPT; deactivation flushes them again.
 
-1. Copy `resources-cpt.php` to your theme's `functions.php` or create a separate file and include it
-2. Copy the `assets` folder to your theme directory
-3. Update the CSS path in the `resources_cpt_enqueue_styles()` function to match your theme structure
+---
+
+## Configuration
+
+### Fallback image
+
+- Go to WP Admin → Resources → Settings.
+- Select a fallback image from the media library.
+- Saved as option: `resources_cpt_fallback_image_id`.
+- Used automatically when a `Resource` doesn’t have a featured image; if not set, a bundled SVG placeholder is used.
+
+---
 
 ## Usage
 
-### Creating Resources
+### Create resources
 
-1. After activating the plugin, you'll see a new "Resources" menu item in your WordPress admin
-2. Click "Add New" to create a new resource
-3. Add a title, featured image, and excerpt/short description
-4. Publish the resource
+1. WP Admin → Resources → Add New
+2. Provide Title, Featured Image (optional), and Excerpt (optional)
+3. Publish
 
-### Displaying Resources
+### Display resources
 
-Use the shortcode anywhere on your site:
+Place the shortcode in any post/page/block:
 
 ```
 [latest_resources limit="5"]
 ```
 
-**Parameters:**
-- `limit` (optional): Number of resources to display (default: 5)
+Parameters:
 
-**Examples:**
+- `limit` (int, optional): number of posts to render (default: 5)
+
+Examples:
+
 ```
 [latest_resources]
-[latest_resources limit="10"]
 [latest_resources limit="3"]
+[latest_resources limit="12"]
 ```
 
-## File Structure
+---
+
+## Developer Notes
+
+### Plugin structure
 
 ```
 resources-cpt/
-├── resources-cpt.php          # Main plugin file
+├── resources-cpt.php                  # bootstrap: constants, i18n, hooks, includes
+├── includes/
+│   ├── cpt.php                        # CPT registration + filters
+│   ├── assets.php                     # env-aware enqueue (minified in production)
+│   ├── shortcode.php                  # query, render, shortcode handler
+│   └── admin.php                      # settings submenu + media picker
 ├── assets/
-│   └── css/
-│       └── resources-style.css # Stylesheet for responsive display
-└── README.md                   # This file
+│   ├── css/
+│   │   ├── resources-style.css        # readable styles
+│   │   └── resources-style.min.css    # minified for production
+│   ├── images/
+│   │   └── placeholder.svg            # ultimate fallback if no admin selection
+│   └── js/
+│       └── admin-settings.js          # media picker wiring for fallback image
+└── README.md
 ```
 
-## Security Features
+### Filters
 
-- All user input is sanitized using `absint()` for numeric values
-- All output is escaped using `esc_html()`, `esc_url()`, `esc_attr()`, and `wp_kses_post()`
-- Direct file access is prevented with `ABSPATH` check
-- Follows WordPress nonce and capability best practices
+- `resources_cpt_register_args` — filter CPT registration args.
+- `resources_cpt_query_args` — filter query args for the latest resources.
+- `resources_cpt_item_data` — filter prepared item data prior to render.
+- `resources_cpt_container_class` — filter outer container class.
+- `resources_cpt_grid_class` — filter grid class.
+- `resources_cpt_empty_message` — filter empty state text.
+- `resources_cpt_fallback_image_src` — filter ultimate fallback URL (when no selection exists).
 
-## Browser Support
+### Assets
 
-- Modern browsers (Chrome, Firefox, Safari, Edge)
-- Responsive design works on all screen sizes
-- Mobile-friendly grid layout
+- Always loads `resources-style.min.css` for best performance.
+- Versions via `filemtime()` when available to avoid stale caches without sacrificing minification.
 
-## Requirements
+### Markup and accessibility
 
-- WordPress 5.0 or higher
-- PHP 7.0 or higher
+- Uses semantic `article`, headings, and links.
+- Images are `loading="lazy"` and include `alt`. Fallback images inherit a sensible `alt` based on the title.
+- Responsive layout via CSS Grid; images use `sizes` and WP-generated `srcset` when possible.
 
-## Author
+### Security
 
-Created for WordPress Developer Assessment
+- All user-provided input is sanitized (e.g., `absint`).
+- All output is escaped (`esc_html`, `esc_attr`, `esc_url`, `wp_kses_post`).
+- Direct access is guarded (`ABSPATH` check).
+
+---
+
+## Changelog
+
+- 1.1.01
+
+  - Split code into `includes/` (CPT, assets, shortcode, admin).
+  - Added settings page to select a fallback image.
+  - Responsive images (`sizes`) and lazy-loading.
+  - Minified CSS for production; cache-busting in debug.
+  - Developer filters for high extensibility.
+
+- 1.0.0
+  - Initial release with CPT and shortcode.
+
+---
 
 ## License
 
 GPL v2 or later
-
