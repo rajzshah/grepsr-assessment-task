@@ -1,0 +1,23 @@
+Overview:
+This assessment is designed to evaluate your ability to handle tasks you would face as a
+WordPress Developer.
+1. Create a Custom Post Type named “Resources” with the following fields:
+○ Title
+○ Featured Image
+○ Short Description or Excerpt
+2. Develop a shortcode [latest_resources limit=&quot;5&quot;] that displays the latest resources on
+any page in a responsive list or grid. Each item should show:
+○ Title
+○ Featured Image
+○ Short Description
+○ Link to the full post
+3. Your solution should:
+○ Follow WordPress coding standards and best practices
+○ Use proper hooks and enqueue functions if needed
+○ Sanitize and escape all output for security
+○ Be responsive and visually clean
+○ Include optional comments in the code explaining your approach
+
+Deliverable:
+● Either a small plugin or code snippets ready to add to a theme
+● Share via GitHub, Bitbucket, or a ZIP file
