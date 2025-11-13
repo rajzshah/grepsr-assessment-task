@@ -1,0 +1,139 @@
+/**
+ * Resources Custom Post Type Styles
+ * Responsive grid/list layout for displaying resources
+ */
+
+.resources-container {
+	width: 100%;
+	margin: 20px 0;
+}
+
+.resources-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: 30px;
+	margin: 0;
+	padding: 0;
+}
+
+.resource-item {
+	background: #fff;
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	overflow: hidden;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	display: flex;
+	flex-direction: column;
+}
+
+.resource-item:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.resource-image {
+	width: 100%;
+	overflow: hidden;
+	background: #f5f5f5;
+}
+
+.resource-image img {
+	width: 100%;
+	height: auto;
+	display: block;
+	object-fit: cover;
+	transition: transform 0.3s ease;
+}
+
+.resource-item:hover .resource-image img {
+	transform: scale(1.05);
+}
+
+.resource-content {
+	padding: 20px;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.resource-title {
+	margin: 0 0 12px 0;
+	font-size: 1.25rem;
+	line-height: 1.4;
+}
+
+.resource-title a {
+	color: #333;
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+.resource-title a:hover {
+	color: #0073aa;
+}
+
+.resource-excerpt {
+	color: #666;
+	font-size: 0.95rem;
+	line-height: 1.6;
+	margin-bottom: 15px;
+	flex-grow: 1;
+}
+
+.resource-link {
+	display: inline-block;
+	color: #0073aa;
+	text-decoration: none;
+	font-weight: 500;
+	font-size: 0.9rem;
+	transition: color 0.3s ease;
+	margin-top: auto;
+}
+
+.resource-link:hover {
+	color: #005177;
+	text-decoration: underline;
+}
+
+.resources-empty {
+	text-align: center;
+	padding: 40px 20px;
+	color: #666;
+	font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.resources-grid {
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+		gap: 20px;
+	}
+	
+	.resource-content {
+		padding: 15px;
+	}
+	
+	.resource-title {
+		font-size: 1.1rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.resources-grid {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
+	
+	.resource-content {
+		padding: 15px;
+	}
+	
+	.resource-title {
+		font-size: 1rem;
+	}
+	
+	.resource-excerpt {
+		font-size: 0.9rem;
+	}
+}
+
