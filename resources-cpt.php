@@ -3,7 +3,7 @@
  * Plugin Name: Resources Custom Post Type
  * Plugin URI: https://github.com/rajzshah/grepsr-assessment-task
  * Description: A custom post type for Resources with a shortcode to display latest resources in a responsive grid/list.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Raj Shah
  * Author URI: https://raj-shah.com.np/about/
  * License: GPL v2 or later
